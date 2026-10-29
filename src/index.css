@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+    --animate-shine: shine var(--duration) infinite linear;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+        }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+        }
+    }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+        }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+        }
+    }
+  @keyframes shine {
+  0% {
+    background-position: 0% 0%;
+        }
+  50% {
+    background-position: 100% 100%;
+        }
+  to {
+    background-position: 0% 0%;
+        }
+    }
+}
+/* ------------------------------------------------------------------
+   Ourocar — tokens
+   Dourado: a amostra do logo (#F6D846) é provisória até a marca
+   enviar o arquivo original. O âmbar vem das capas dos destaques.
+------------------------------------------------------------------- */
+@theme {
+  --color-ink: #050505;
+  --color-coal: #0c0b09;
+  --color-smoke: #16140f;
+  --color-gold: #f6d846;
+  --color-gold-deep: #e0a512;
+  --color-amber: #f5a300;
+  --color-cream: #f6f1e4;
+
+  --font-display: "Saira", "Arial Narrow", system-ui, sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-wide: "Michroma", "Manrope", sans-serif;
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --gold-gradient: linear-gradient(100deg, #b8860b 0%, #f6d846 32%, #fff3b8 50%, #f5a300 72%, #b8860b 100%);
+}
+
+html {
+  background: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection { background: var(--color-gold); color: #000; }
+
+.text-gold-gradient {
+  background: var(--gold-gradient);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-sheen 6s linear infinite;
+}
+
+@keyframes gold-sheen { to { background-position: -200% center; } }
+
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.gold-hairline {
+  background: linear-gradient(90deg, transparent, rgba(246, 216, 70, 0.7), transparent);
+  height: 1px;
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -2%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+.hide-scrollbar { scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
