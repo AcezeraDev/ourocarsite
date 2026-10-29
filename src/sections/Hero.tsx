@@ -19,7 +19,7 @@ export default function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, -120])
 
   return (
-    <section ref={section} id="inicio" className="relative isolate h-[100svh] min-h-[640px] overflow-hidden">
+    <section ref={section} id="inicio" className="relative isolate flex flex-col overflow-hidden md:block md:h-[100svh] md:min-h-[640px]">
       {/* camada 1: fotografia gerada (estrada com rastros de luz) */}
       <motion.div className="absolute inset-0 -z-20" style={{ y: reduce ? 0 : bgY }}>
         <img
@@ -32,8 +32,9 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent" />
       </motion.div>
 
-      {/* camada 2: cena WebGL */}
-      <div ref={sceneRef} className="absolute inset-0 -z-10">
+      {/* camada 2: cena WebGL — no celular vira um "palco" abaixo dos botões,
+          para o carro nunca ficar por cima do texto */}
+      <div ref={sceneRef} className="relative order-last h-[46svh] min-h-[300px] md:absolute md:inset-0 md:-z-10 md:h-auto">
         <Suspense fallback={null}>
           <HeroScene mobile={mobile} active={near} />
         </Suspense>
@@ -41,8 +42,8 @@ export default function Hero() {
 
       {/* camada 3: conteúdo */}
       <motion.div
-        style={{ opacity: fade, y: reduce ? 0 : textY }}
-        className="mx-auto flex h-full max-w-7xl flex-col justify-start px-5 pt-28 sm:px-8 md:justify-center md:pt-0"
+        style={{ opacity: mobile ? 1 : fade, y: reduce || mobile ? 0 : textY }}
+        className="mx-auto flex max-w-7xl flex-col justify-start px-5 pt-28 sm:px-8 md:h-full md:justify-center md:pt-0"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +126,7 @@ export default function Hero() {
         </motion.span>
       </motion.a>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t md:h-40 from-ink to-transparent" />
     </section>
   )
 }

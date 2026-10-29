@@ -53,7 +53,7 @@ function Supercar({ mobile }: { mobile: boolean }) {
   }, [ao])
 
   const baseX = mobile ? 0 : Math.min(viewport.width * 0.2, 2.4)
-  const scale = mobile ? 0.6 : 0.92
+  const scale = mobile ? 1.3 : 0.92
 
   useFrame(({ clock }, dt) => {
     if (!root.current || !car.current) return
@@ -64,7 +64,7 @@ function Supercar({ mobile }: { mobile: boolean }) {
     const scroll = Math.min(1, window.scrollY / window.innerHeight)
 
     root.current.position.x = baseX + (1 - e) * 9
-    root.current.position.y = (mobile ? -1.85 : -0.56) - scroll * 0.4
+    root.current.position.y = mobile ? -0.56 : -0.56 - scroll * 0.4
     const yaw = Math.PI - 0.7 + pointer.x * 0.25 + scroll * 1.6 + Math.sin(t * 0.3) * 0.05
     car.current.rotation.y = THREE.MathUtils.damp(car.current.rotation.y, yaw, 2.5, dt)
 
@@ -176,7 +176,7 @@ function LightBars() {
 
 function Floor({ mobile }: { mobile: boolean }) {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, mobile ? -1.86 : -0.565, 0]}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.565, 0]}>
       <planeGeometry args={[60, 30]} />
       {mobile ? (
         <meshStandardMaterial color="#070605" metalness={0.8} roughness={0.35} transparent opacity={0.9} />
@@ -228,8 +228,8 @@ export default function HeroScene({ mobile, active }: { mobile: boolean; active:
   return (
     <Canvas
       dpr={[1, mobile ? 1.5 : 2]}
-      camera={{ position: [0, 1.2, mobile ? 8.8 : 9], fov: mobile ? 44 : 32 }}
-      gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.95 }}
+      camera={{ position: [0, 1.2, mobile ? 7.4 : 9], fov: mobile ? 38 : 32 }}
+      gl={{ antialias: mobile, alpha: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.95 }}
       frameloop={active ? 'always' : 'never'}
       style={{ position: 'absolute', inset: 0 }}
     >
@@ -245,10 +245,14 @@ export default function HeroScene({ mobile, active }: { mobile: boolean; active:
       <LightTrails count={mobile ? 40 : 90} />
       <Sparkles count={mobile ? 40 : 110} scale={[14, 5, 6]} position={[0, 1.4, -1.5]} size={2.2} speed={0.35} color="#f6d846" opacity={0.65} />
       <Floor mobile={mobile} />
-      <EffectComposer multisampling={mobile ? 0 : 4}>
-        <Bloom intensity={mobile ? 0.8 : 1.1} luminanceThreshold={0.85} luminanceSmoothing={0.2} mipmapBlur radius={0.7} />
-        <Vignette eskil={false} offset={0.2} darkness={0.75} />
-      </EffectComposer>
+      {/* Pós-processamento só no desktop: em GPUs de celular o bloom com
+          canvas transparente piscava e tirava o antialias. */}
+      {!mobile && (
+        <EffectComposer multisampling={4}>
+          <Bloom intensity={1.1} luminanceThreshold={0.85} luminanceSmoothing={0.2} mipmapBlur radius={0.7} />
+          <Vignette eskil={false} offset={0.2} darkness={0.75} />
+        </EffectComposer>
+      )}
     </Canvas>
   )
 }
